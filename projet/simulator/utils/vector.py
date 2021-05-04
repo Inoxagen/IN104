@@ -95,7 +95,8 @@ class Vector:
                 result[i] = self[i] - other
             return result
 
-
+    def __rsub__(self,other):
+        return (-1)*(self)+ other
 
 
 
