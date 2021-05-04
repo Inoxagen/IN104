@@ -18,15 +18,17 @@ if __name__ == "__main__":
               mass=1,
               draw_radius=5)
 
+
     world = World()
     world.add(b1)
     world.add(b2)
+
 
     simulator = Simulator(world, DummyEngine, DummySolver)
 
     screen_size = Vector2(800, 600)
     screen = Screen(screen_size,
-                    bg_color=(0, 0, 0),
+                    bg_color=(0, 0, 40),
                     caption="Simulator")
     screen.camera.scale = 50
 
