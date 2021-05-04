@@ -74,6 +74,9 @@ class Vector:
                 result[i] = self[i] + other
             return result
 
+    def __radd__(self,other):
+        return self + other
+
     # this is called to compute expressions of the form `a - b`
     # where a is a Vector
     def __sub__(self, other):
@@ -91,6 +94,12 @@ class Vector:
             for i in range(self.dim):
                 result[i] = self[i] - other
             return result
+
+
+
+
+
+
 
     # this is called to compute expressions of the form `a * b`
     # where a is a Vector

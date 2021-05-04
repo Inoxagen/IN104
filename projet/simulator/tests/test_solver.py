@@ -1,6 +1,7 @@
 import unittest
 from math import cos, sin, sqrt, exp, pi
 from ..solvers import DummySolver
+#from ..utils.vector import Vector2
 
 # region ODE Systems
 
@@ -57,14 +58,14 @@ ODE_SYSTEMS = [
 
 # region Solvers
 # This arry stores all the solvers that will be tested against all the systems
-SOLVERS = []
+SOLVERS = [DummySolver]
 # endregion
 
 
 class SolverTestCase(unittest.TestCase):
 
     def test_integrate(self):
-        x0 = 0.600686
+        x0 = Vector2(0.600686,0)
         t0 = 0.1243
         h = 1
 
@@ -75,8 +76,7 @@ class SolverTestCase(unittest.TestCase):
 
                 for solver in SOLVERS:
                     with self.subTest(solver=solver):
-                        solver_instance = solver(
-                            f, t0, exact_y0, max_step_size=0.0001)
+                        solver_instance = solver(f, t0, exact_y0, max_step_size=0.0001)
                         approx = solver_instance.integrate(t0 + h)
 
                         self.assertAlmostEqual(approx, exact, places=3)

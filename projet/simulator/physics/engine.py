@@ -6,12 +6,11 @@ def gravitational_force(pos1, mass1, pos2, mass2):
     """ Return the force applied to a body in pos1 with mass1
         by a body in pos2 with mass2
     """
-    #print(pos1, pos2)
     vecteur_difference=pos1-pos2
     d=Vector.norm(vecteur_difference)
     if d!=0 :
         # Force de A sur B = G* mA * mB / d² dans la direction A vers B
-        return (-G*mass1*mass2/(d*d))*vecteur_difference
+        return (-G*mass1*mass2/(d*d*d))*vecteur_difference
     else:
         return Vector2(0,0)
 

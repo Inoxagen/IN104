@@ -28,4 +28,4 @@ class Camera:
 
     def from_screen_coords(self, position):
         """ Converts the screen-coordinate position to a world-coordinate. """
-        return 1/self.scale*(position - 1/2 *self.screen_size)
+        return 1/self.scale*(position - 1/2 *self.screen_size) + self.position

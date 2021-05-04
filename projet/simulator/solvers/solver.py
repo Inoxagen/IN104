@@ -39,10 +39,11 @@ class DummySolver(ISolver):
 
         while(self.t0<t):
             y1=self.f(self.t0,self.y0)
-            for i in range(len(self.y0)):
-                self.y0[i]+=y1[i]
+            #print(self.y0)
+            #for i in range(len(self.y0)):
+            self.y0+=y1*self.max_step_size
             # pos,vit = pos+vit*1 , vit+acc*1
-            self.t0+=1
+            self.t0+=self.max_step_size
 
         return self.y0
 
