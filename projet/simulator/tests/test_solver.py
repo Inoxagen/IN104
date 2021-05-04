@@ -65,7 +65,7 @@ SOLVERS = [DummySolver]
 class SolverTestCase(unittest.TestCase):
 
     def test_integrate(self):
-        x0 = Vector2(0.600686,0)
+        x0 = 0.600686
         t0 = 0.1243
         h = 1
 
@@ -79,4 +79,5 @@ class SolverTestCase(unittest.TestCase):
                         solver_instance = solver(f, t0, exact_y0, max_step_size=0.0001)
                         approx = solver_instance.integrate(t0 + h)
 
+                        # Avec places = 2 on passe le test
                         self.assertAlmostEqual(approx, exact, places=3)

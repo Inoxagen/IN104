@@ -100,8 +100,6 @@ class Vector:
 
 
 
-
-
     # this is called to compute expressions of the form `a * b`
     # where a is a Vector
     def __mul__(self, other):

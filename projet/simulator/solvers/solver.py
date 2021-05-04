@@ -37,14 +37,17 @@ class DummySolver(ISolver):
             Return the new state at time t.
         """
 
+        # On recher le pas fixe de la bonne longueurs
+        nbr_de_pas= abs((t-self.t0) // self.max_step_size )
+        if(nbr_de_pas==0):
+             pas_fixe=t-self.t0
+        else:
+            pas_fixe=abs((t-self.t0)/nbr_de_pas)
+
         while(self.t0<t):
             y1=self.f(self.t0,self.y0)
-            #print(self.y0)
-            #for i in range(len(self.y0)):
-            self.y0+=y1*self.max_step_size
-            # pos,vit = pos+vit*1 , vit+acc*1
-            self.t0+=self.max_step_size
-
+            self.y0 += pas_fixe * y1 # pos,vit = pos+vit*pas_fixe , vit+acc*pas_fixe
+            self.t0 += pas_fixe
         return self.y0
 
 
