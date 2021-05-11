@@ -19,7 +19,7 @@ class Screen:
         self.mouse_position = Vector2(0, 0)
 
         # this will store which buttons have been pressed in the current frame
-        # [LeftMouse, MiddleMouse, RightMouse, ScrollWheelUp, SrollWheelDown]
+        # [LeftMouse, MiddleMouse, RightMouse, ScrollWheelUp, ScrollWheelDown]
         self._buttons = [False, False, False, False, False]
 
         # this will be true when the user presses the exit button of the window
