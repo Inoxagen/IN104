@@ -15,6 +15,16 @@ def gravitational_force(pos1, mass1, pos2, mass2):
         return Vector(len(pos1))  #  Vecteur nul bonne longueur
 
 
+def gravitational_force_depuis_diff(vecteur_difference, mass2):
+    """ La difference est calculée pour vérifier les colisions
+        La masse 1 etait passée à 1 pour éviter de diviser
+        -> on les retire des paramètres
+    """
+    d=Vector.norm(vecteur_difference)
+    # Force de A sur B = G* mA * mB / d² dans la direction A vers B
+    return (-G*mass2/(d*d*d))*vecteur_difference
+
+
 class IEngine:
     def __init__(self, world):
         self.world = world
@@ -108,33 +118,73 @@ class DummyEngine(IEngine):
             y[self.dim*self.n + self.dim*i+1]= self.world._bodies[i].velocity.get_y()
         return y
 
+class DummyPlusCollisonEngine(DummyEngine):
 
-"""
-class Engine_Euler:
-    def make_solver_state(self):
-        #n_accelerations=[] # Contient tte les N accerations donné par le PFD respectivement de nos N objets
-        y0=[]
-        y1=[]
+    def derivatives(self, t0, y0):
+        self.n=len(self.world)
+
+        # [vx1, vy1, vx2, vy2, ..., vxn, vyn]
+        y1=Vector(2*self.dim*self.n)
+
         for i in range(self.n):
-            acc_i=0
-            pos_i=self.world._bodies[i].position # On l'enregistre pour ne pas avoir a l'appeler a chaque fois
+            # Vitesse
+            y1[self.dim*i]= y0[(self.n + i)*self.dim]
+            y1[self.dim*i+1]= y0[(self.n + i)*self.dim+1]
+
+            # Acceleration
+            acc_i=Vector2(0,0)
+            pos_i=Vector2(y0[self.dim*i],y0[self.dim*i+1])
+
+            # On l'enregistre pour ne pas avoir a l'appeler a chaque fois
             # mass_i=self.world[i].mass Inutile de multiplier par mass_i pour diviser par mass_i juste après
+
             for j in range(self.n):
                 if(i!=j):
-                    acc_i+=gravitational_force(pos_i, 1,self.world._bodies[j].position, self.world._bodies[j].mass)
-            #n_accelerations.append(acc_i)
+                    vect_diff=pos_i - Vector2(y0[self.dim*j],y0[self.dim*j+1])
+                    if j>i and vect_diff.norm()<self.world.seuil_collision and self.world._bodies[j].mass!=0 and self.world._bodies[i].mass!=0:
+                        """
+                        COLLISION:
+                                Doctrine :  on arrete le calcul,
+                                            on fusionne les 2 corps dans 1
+                                            l'autre est passé à masse nul
+                                            (il sera supprimé plus tard)
+                                            on recommence ce calcul
+                                    [ équivalent optimisé de 2 pop et 1 add ]
+                        """
+                        # Fusion des données
+                        """# Ajout des masse
+                        self.world._bodies[i].mass+=self.world._bodies[j].mass
+                        # Moyenne des couleurs
+                        self.world._bodies[i].color=( (self.world._bodies[i].color[0]+self.world._bodies[j].color[0])/2 ,(self.world._bodies[i].color[1]+self.world._bodies[j].color[1])/2 ,(self.world._bodies[i].color[2]+self.world._bodies[j].color[2])/2 )
 
-            # On modifie directement les vitesses
-            self.world._bodies[i].velocity+=acc_i
-            y1.append(self.world._bodies[i].velocity)
 
 
-        for i in range(self.n):
-        # Integration des positions
-            self.world._bodies[i].position+=self.world._bodies[i].velocity
-            y0.append(self.world._bodies[i].position)
+                        # Suppression du corps fusionné
+                        self.world.pop(j)   # On a défini cette méthode dans World"""
 
-        self.world.t0+=1
+                        # Recupération des corps à fusionner
+                        J=self.world.get(j)
+                        I=self.world.get(i)
 
-        return y0+y1
-"""
+                        # Mis a 0 de j
+                        self.world._bodies[j].mass=0
+                        self.world._bodies[j].velocity=Vector2(0,0)
+                        self.world._bodies[j].color=self.world.bg_color
+                        # Pondération de la vitesse
+                        self.world._bodies[i].velocity=(I.mass*I.velocity+J.mass*J.velocity)/(I.mass+J.mass)
+                        # Ajout des masse
+                        self.world._bodies[i].mass+=J.mass
+                        # Moyenne des couleurs
+                        self.world._bodies[i].color=((I.color[0]+J.color[0])/2,(I.color[1]+J.color[1])/2,(I.color[2]+J.color[2])/2 )
+
+                        print('COLLISION')
+                        return self.derivatives(t0, y0)
+
+                    else:
+                        acc_i+=gravitational_force_depuis_diff(vect_diff, self.world._bodies[j].mass)
+
+            y1[self.dim*self.n + self.dim*i ] = acc_i.get_x()
+            y1[self.dim*self.n + self.dim*i+1]= acc_i.get_y()
+
+        return y1
+

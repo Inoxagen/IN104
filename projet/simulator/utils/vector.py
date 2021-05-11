@@ -6,9 +6,13 @@ class VectorError(Exception):
 
 
 class Vector:
-    def __init__(self, dim):
+    def __init__(self, dim, seuil=0):
+        """ On ajout le seuil pour considèrer un vecteur nul
+            Lors de l'ajout, soustraction et multiplication
+            on garde que le plus grand des seuils"""
         self.dim = dim
         self._values = [0 for i in range(dim)]
+        self.seuil=seuil
 
     def sqrnorm(self):
         sqr_values = [x*x for x in self._values]
@@ -16,6 +20,20 @@ class Vector:
 
     def norm(self):
         return sqrt(self.sqrnorm())
+
+    def estNul(self):
+        """ Vrai si le vecteur est nul
+            Faux sinon                  """
+        return self.norm()==0
+
+    def estPresqueNul(self):
+        """ Vrai si le vecteur est inferieur au seuil
+            Faux sinon    """
+        return self.norm()<=self.seuil
+
+    def get_seuil(self):
+        """ Renvoie le seuil"""
+        return self.seuil
 
     def __str__(self):
         return "(%s)" % (", ".join([str(x) for x in self._values]))
@@ -63,8 +81,7 @@ class Vector:
             if (self.dim != other.dim):
                 raise VectorError("Cannot add vectors of dim %d and %d" % (
                     self.dim, other.dim))
-
-            result = self.__class__(self.dim)
+            result = self.__class__(self.dim,max(self.seuil,other.seuil))
             for i in range(self.dim):
                 result[i] = self[i] + other[i]
             return result
@@ -85,7 +102,7 @@ class Vector:
                 raise VectorError("Cannot subtract vectors of dim %d and %d" % (
                     self.dim, other.dim))
 
-            result = self.__class__(self.dim)
+            result = self.__class__(self.dim,max(self.seuil,other.seuil))
             for i in range(self.dim):
                 result[i] = self[i] - other[i]
             return result
@@ -108,7 +125,7 @@ class Vector:
                 raise VectorError("Cannot multiply vectors of dim %d and %d" % (
                     self.dim, other.dim))
 
-            result = self.__class__(self.dim)
+            result = self.__class__(self.dim,max(self.seuil,other.seuil))
             for i in range(self.dim):
                 result[i] = self[i] * other[i]
             return result
@@ -137,8 +154,8 @@ class Vector:
 
 
 class Vector2(Vector):
-    def __init__(self, x=0, y=0):
-        super().__init__(2)
+    def __init__(self, x=0, y=0, seuil=0):
+        super().__init__(2,seuil)
         self[0] = x
         self[1] = y
 

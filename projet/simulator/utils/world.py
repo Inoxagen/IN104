@@ -15,8 +15,10 @@ class Body:
 
 
 class World:
-    def __init__(self):
+    def __init__(self, seuil_collision=0,bg_color=(0,0,0)):
         self._bodies = []
+        self.seuil_collision=seuil_collision
+        self.bg_color=bg_color
 
     def add(self, body):
         """ Add `body` to the world.
@@ -25,6 +27,12 @@ class World:
         new_id = len(self._bodies)
         self._bodies.append(body)
         return new_id
+
+    def pop(self, index):
+        """ Supprime l'élément d'index 'index' du monde.
+            Return le `body` supprimé.
+        """
+        return self._bodies.pop(index)
 
     def get(self, id_):
         """ Return the body with ID `id`.

@@ -3,7 +3,7 @@
 from simulator import Simulator, World, Body
 from simulator.utils.vector import Vector2
 from simulator.solvers import DummySolver
-from simulator.physics.engine import DummyEngine
+from simulator.physics.engine import DummyPlusCollisonEngine
 from simulator.graphics import Screen
 
 import pygame as pg
@@ -25,18 +25,36 @@ if __name__ == "__main__":
               mass=1,
               color=(9,156,237),
               draw_radius=5)
+    # Pour Collision
+    b4 = Body(Vector2(0, -1),
+              velocity=Vector2(0, 0),
+              mass=1,
+              color=(255,0,0),
+              draw_radius=5)
+    b5 = Body(Vector2(0, 1),
+              velocity=Vector2(0,0),
+              mass=1,
+              color=(0,255,0),
+              draw_radius=5)
+    b6 = Body(Vector2(0, 10),
+              velocity=Vector2(0,0),
+              mass=1,
+              color=(0,0,255),
+              draw_radius=5)
 
+    world = World(0.05,(0,0,40))
+    #world.add(b1)
+    #world.add(b2)
+    #world.add(b3)
+    world.add(b4)
+    world.add(b5)
+    world.add(b6)
 
-    world = World()
-    world.add(b1)
-    world.add(b2)
-    world.add(b3)
-
-    simulator = Simulator(world, DummyEngine, DummySolver)
+    simulator = Simulator(world, DummyPlusCollisonEngine, DummySolver)
 
     screen_size = Vector2(800, 600)
     screen = Screen(screen_size,
-                    bg_color=(0, 0, 40),
+                    bg_color=world.bg_color,
                     caption="Simulator")
     screen.camera.scale = 50
 
