@@ -37,7 +37,7 @@ class DummySolver(ISolver):
             Return the new state at time t.
         """
 
-        # On recher le pas fixe de la bonne longueurs
+        # On recherche le pas fixe de la bonne longueur
         nbr_de_pas= abs((t-self.t0) // self.max_step_size )
         if(nbr_de_pas==0):
              pas_fixe=t-self.t0
