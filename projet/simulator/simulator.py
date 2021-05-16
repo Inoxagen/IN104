@@ -26,7 +26,7 @@ class Simulator:
             b_i.position.set_x(y[2 * i])
             b_i.position.set_y(y[2 * i + 1])
 
-            b_i.velocity.set_x(y[len(self.world) + 2 * i])
-            b_i.velocity.set_y(y[len(self.world) + 2 * i + 1])
+            b_i.velocity.set_x(y[2*len(self.world) + 2 * i])
+            b_i.velocity.set_y(y[2*len(self.world) + 2 * i + 1])
 
         self.t += h

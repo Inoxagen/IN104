@@ -1,6 +1,9 @@
 from .vector import Vector2
 from ..utils.uid import UID
 
+import random as rd
+import math
+
 
 class Body:
     def __init__(self, position, velocity=Vector2(0, 0), mass=1, color=(255, 255, 255), draw_radius=50):
@@ -27,6 +30,55 @@ class World:
         new_id = len(self._bodies)
         self._bodies.append(body)
         return new_id
+
+    def add_set(self, liste_de_corps):
+        """ Pour ajouter une liste de corps"""
+        list_id=[]
+        for body in liste_de_corps :
+            list_id.append(self.add(body))
+        return list_id
+
+    def add_N_corps_aleat_diff(self,N, borne_pos, borne_vit, mass_max):
+        """" Ajoute des corps aléatoires a des positions differentes """
+
+        # Récupération des positions déjà occupées
+        list_pos_occupées=[]
+        for corps in self._bodies:
+            list_pos_occupées.append([corps.position.get_x,corps.position.get_y])
+
+        # Aléatoire -> Nouvelles positions
+        list_pos_vide_aleat=[]
+        L=len(borne_pos)
+        for i in range(N):
+            ele_aleat=[borne_pos[i][0]+rd.random()*(borne_pos[i][1]-borne_pos[i][0]) for i in range(L)]
+            while(ele_aleat in list_pos_occupées+list_pos_vide_aleat):
+                ele_aleat=[borne_pos[i][0]+rd.random()*(borne_pos[i][1]-borne_pos[i][0]) for i in range(L)]
+            list_pos_vide_aleat.append(ele_aleat) # On l'ajoute au position aléatoire
+
+        # Aléatoire -> Toutes les autres paramètres des corps
+        list_id=[]
+        for pos in list_pos_vide_aleat :
+            mass=rd.random()*mass_max
+
+            b_aleat = Body(Vector2(pos[0], pos[1]),
+                    velocity=Vector2(borne_vit[0][0]+rd.random()*(borne_vit[0][1]-borne_vit[0][0]),
+                                     borne_vit[1][0]+rd.random()*(borne_vit[1][1]-borne_vit[1][0])),
+                    mass=mass,
+                    color=tuple([rd.randint(0,255) for i in range(3)]),
+                    draw_radius=int(5*math.log(mass)))
+
+            list_id.append(self.add(b_aleat)) # On ajoute le nouveau corps et on stoque son id pour le renvoyer
+        return list_id
+
+    def clear_all(self,seuil_collision=-1, bg_color=(-1,-1,-1)):
+        """ Supprime tout les corps,
+        possibilité de redefinir le seuil et la couleur """
+        self._bodies = []
+        if seuil_collision!=-1 :
+            self.seuil_collision=seuil_collision
+        if bg_color!=(-1,-1,-1):
+            self.bg_color=bg_color
+        return None
 
     def pop(self, index):
         """ Supprime l'élément d'index 'index' du monde.
