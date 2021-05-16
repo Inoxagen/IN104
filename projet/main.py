@@ -3,7 +3,8 @@
 from simulator import Simulator, World, Body
 from simulator.utils.vector import Vector2
 from simulator.solvers import DummySolver
-from simulator.physics.engine import DummyPlusCollisonEngine
+from simulator.physics.engine import SimpleAvecCollisonEngine
+from simulator.physics.engine import SimpleSansCollisonEngine
 from simulator.graphics import Screen
 
 import pygame as pg
@@ -46,18 +47,18 @@ def N_corps_aleat_diff(N, borne_pos, borne_vit, mass_max):
 
 
 if __name__ == "__main__":
-    b1 = Body(Vector2(0, 0),
+    Soleil = Body(Vector2(0, 0),
               velocity=Vector2(0, 0),
               mass=10,
               color=(255,255,7),
               draw_radius=10)
-    b2 = Body(Vector2(0, -1),
+    Terre = Body(Vector2(0, -1),
               velocity=Vector2(-0.2,0),
               mass=1,
               color=(255,148,23),
               draw_radius=5)
 
-    b3 = Body(Vector2(0, 1),
+    Mars = Body(Vector2(0, 1),
               velocity=Vector2(0.2,0),
               mass=1,
               color=(9,156,237),
@@ -81,27 +82,31 @@ if __name__ == "__main__":
 
 
     # Set Soleil Terre Mars
-    systemeSolaire = World(0.1,(0,0,40))
-    systemeSolaire.add_set([b1,b2,b3])
+    systeme_solaire = World(0.1,(0,0,40),40)
+    systeme_solaire.add_set([Soleil,Terre,Mars])
 
     # Set Collision
-    #world.add_set([b4,b5,b6])
+    monde_pour_collision = World(0.1,(0,0,70))
+    monde_pour_collision.add_set([b4,b5,b6])
 
     # Set Aléatoire
-    world=World(100,(0,0,40))
-    world.add_N_corps_aleat_diff(10,[[-1000,1000],[-1000,1000]],[[-2,2],[-2,2]],1000)
+    monde_aléatoire = World(100,(0,0,0),10,0.25) # Petite camera scale
+    monde_aléatoire.add_N_corps_aleat_diff(10,[[-1000,1000],[-1000,1000]],[[-2,2],[-2,2]],1000)
 
-    simulator = Simulator(world, DummyPlusCollisonEngine, DummySolver)
+    # Choix du monde :
+    world=systeme_solaire
+
+    simulator = Simulator(world, SimpleAvecCollisonEngine, DummySolver)
 
     screen_size = Vector2(800, 600)
     screen = Screen(screen_size,
                     bg_color=world.bg_color,
                     caption="Simulator")
-    screen.camera.scale = 50
+    screen.camera.scale = world.camera_scale_initial
 
     # this coefficient controls the speed
     # of the simulation
-    time_scale = 10
+    time_scale = world.time_scale
 
     print("Start program")
     while not screen.should_quit:

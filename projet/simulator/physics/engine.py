@@ -97,8 +97,33 @@ class DummyEngine(IEngine):
             y[self.dim*self.n + self.dim*i+1]= self.world._bodies[i].velocity.get_y()
         return y
 
+class SimpleSansCollisonEngine(DummyEngine):
+    def derivatives(self, t0, y0):
+        self.n=len(self.world)
 
-class DummyPlusCollisonEngine(DummyEngine):
+        # [vx1, vy1, vx2, vy2, ..., vxn, vyn]
+        y1=Vector(len(y0))
+
+        for i in range(self.n):
+        # Vitesse :
+            y1[self.dim*i]= y0[(self.n + i)*self.dim]
+            y1[self.dim*i+1]= y0[(self.n + i)*self.dim+1]
+
+        # Acceleration :
+            vect_acc=Vector2(0,0)
+            pos_i=Vector2(y0[self.dim*i],y0[self.dim*i+1])
+
+            for j in range(i):
+                vect_diff=pos_i - Vector2(y0[self.dim*j],y0[self.dim*j+1])
+                d=vect_diff.norm()
+                vect_acc+=(-G/(d*d*d))*vect_diff
+                y1[self.dim*self.n + self.dim*i ] += self.world._bodies[j].mass*vect_acc.get_x()
+                y1[self.dim*self.n + self.dim*i+1]+= self.world._bodies[j].mass*vect_acc.get_y()
+                y1[self.dim*self.n + self.dim*j ] += -self.world._bodies[i].mass*vect_acc.get_x()
+                y1[self.dim*self.n + self.dim*j+1]+= -self.world._bodies[i].mass*vect_acc.get_y()
+        return y1
+
+class SimpleAvecCollisonEngine(DummyEngine):
     def derivatives(self, t0, y0):
         self.n=len(self.world)
 
@@ -158,6 +183,7 @@ class DummyPlusCollisonEngine(DummyEngine):
                             self.world._bodies[j].mass=0
                             self.world._bodies[j].velocity=Vector2(0,0)
                             self.world._bodies[j].color=self.world.bg_color
+                            self.world._bodies[j].draw_radius=0
 
                             return self.derivatives(t0, y0)
 
