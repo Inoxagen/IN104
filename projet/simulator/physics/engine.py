@@ -15,7 +15,7 @@ def gravitational_force(pos1, mass1, pos2, mass2):
         return Vector(len(pos1))  #  Vecteur nul bonne longueur
 
 
-def gravitational_force_depuis_diff(vecteur_difference):
+def force_grav_massiq_depuis_diff(vecteur_difference):
     """ La difference est calculée pour vérifier les colisions
         La masse 1 etait passée à 1 pour éviter de diviser
         -> on les retire des paramètres
@@ -74,7 +74,8 @@ class DummyEngine(IEngine):
 
             # Acceleration
             acc_i=Vector2(0,0)
-            pos_i=Vector2(y0[self.dim*i],y0[self.dim*i+1]) # On l'enregistre pour ne pas avoir a l'appeler a chaque fois
+            pos_i=Vector2(y0[self.dim*i],y0[self.dim*i+1])
+            # On l'enregistre pour ne pas avoir a l'appeler a chaque fois
             # mass_i=self.world[i].mass Inutile de multiplier par mass_i pour diviser par mass_i juste après
 
             for j in range(self.n):
@@ -97,46 +98,45 @@ class DummyEngine(IEngine):
             y[self.dim*self.n + self.dim*i+1]= self.world._bodies[i].velocity.get_y()
         return y
 
+
 class SimpleSansCollisonEngine(DummyEngine):
     def derivatives(self, t0, y0):
         self.n=len(self.world)
 
-        # [vx1, vy1, vx2, vy2, ..., vxn, vyn]
-        y1=Vector(len(y0))
+        y1=Vector(len(y0)) # Pouur stoquer : [vx1, vy1, vx2, vy2, ..., vxn, vyn]
+
+        vect_acc=Vector2(0,0)  # Acceleration
 
         for i in range(self.n):
-        # Vitesse :
+            # Vitesse :
             y1[self.dim*i]= y0[(self.n + i)*self.dim]
             y1[self.dim*i+1]= y0[(self.n + i)*self.dim+1]
 
-        # Acceleration :
-            vect_acc=Vector2(0,0)
+
             pos_i=Vector2(y0[self.dim*i],y0[self.dim*i+1])
 
             for j in range(i):
-                vect_diff=pos_i - Vector2(y0[self.dim*j],y0[self.dim*j+1])
-                d=vect_diff.norm()
-                vect_acc+=(-G/(d*d*d))*vect_diff
+                vect_acc=force_grav_massiq_depuis_diff(pos_i - Vector2(y0[self.dim*j],y0[self.dim*j+1]))
                 y1[self.dim*self.n + self.dim*i ] += self.world._bodies[j].mass*vect_acc.get_x()
                 y1[self.dim*self.n + self.dim*i+1]+= self.world._bodies[j].mass*vect_acc.get_y()
                 y1[self.dim*self.n + self.dim*j ] += -self.world._bodies[i].mass*vect_acc.get_x()
                 y1[self.dim*self.n + self.dim*j+1]+= -self.world._bodies[i].mass*vect_acc.get_y()
         return y1
 
+
 class SimpleAvecCollisonEngine(DummyEngine):
     def derivatives(self, t0, y0):
         self.n=len(self.world)
 
-        # [vx1, vy1, vx2, vy2, ..., vxn, vyn]
-        y1=Vector(2*self.dim*self.n)
+        y1=Vector(len(y0)) # Pouur stoquer : [vx1, vy1, vx2, vy2, ..., vxn, vyn]
+
+        vect_acc=Vector2(0,0)  # Acceleration
 
         for i in range(self.n):
-        # Vitesse :
+            # Vitesse :
             y1[self.dim*i]= y0[(self.n + i)*self.dim]
             y1[self.dim*i+1]= y0[(self.n + i)*self.dim+1]
 
-        # Acceleration :
-            vect_acc=Vector2(0,0)
             pos_i=Vector2(y0[self.dim*i],y0[self.dim*i+1])
 
             # On l'enregistre pour ne pas avoir a l'appeler a chaque fois
@@ -147,7 +147,7 @@ class SimpleAvecCollisonEngine(DummyEngine):
                         vect_diff=pos_i - Vector2(y0[self.dim*j],y0[self.dim*j+1])
                         d=vect_diff.norm()
 
-                        if vect_diff.norm()<self.world.seuil_collision:
+                        if d<self.world.seuil_collision:
                             """
                             COLLISION:
                                     Doctrine :  on arrete le calcul,
@@ -156,7 +156,7 @@ class SimpleAvecCollisonEngine(DummyEngine):
                                                 (il sera supprimé plus tard)
                                                 on recommence ce calcul
                             """
-                            print('COLLISION entre ',i,' et ',j)
+                            print('      -> COLLISION entre',i,'et',j)
 
                             # Fusion des données
                             # Recupération des corps à fusionner
@@ -188,7 +188,7 @@ class SimpleAvecCollisonEngine(DummyEngine):
                             return self.derivatives(t0, y0)
 
                         else:
-                            vect_acc+=(-G/(d*d*d))*vect_diff
+                            vect_acc=(-G/(d*d*d))*vect_diff
                             y1[self.dim*self.n + self.dim*i ] += self.world._bodies[j].mass*vect_acc.get_x()
                             y1[self.dim*self.n + self.dim*i+1]+= self.world._bodies[j].mass*vect_acc.get_y()
                             y1[self.dim*self.n + self.dim*j ] += -self.world._bodies[i].mass*vect_acc.get_x()

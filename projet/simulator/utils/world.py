@@ -18,8 +18,9 @@ class Body:
 
 
 class World:
-    def __init__(self, seuil_collision=0,bg_color=(0,0,0),time_scale=10,camera_scale_initial=50):
+    def __init__(self,nom, seuil_collision=0,bg_color=(0,0,0),time_scale=10,camera_scale_initial=50):
         self._bodies = []
+        self.nom=nom
         self.seuil_collision=seuil_collision
         self.bg_color=bg_color
         self.time_scale=time_scale

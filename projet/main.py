@@ -82,58 +82,60 @@ if __name__ == "__main__":
 
 
     # Set Soleil Terre Mars
-    systeme_solaire = World(0.1,(0,0,40),40)
+    systeme_solaire = World("Système Solaire",0.1,(0,0,40),10)
     systeme_solaire.add_set([Soleil,Terre,Mars])
 
     # Set Collision
-    monde_pour_collision = World(0.1,(0,0,70))
+    monde_pour_collision = World("Monde pour collision",0.1,(0,0,70))
     monde_pour_collision.add_set([b4,b5,b6])
 
     # Set Aléatoire
-    monde_aléatoire = World(100,(0,0,0),10,0.25) # Petite camera scale
-    monde_aléatoire.add_N_corps_aleat_diff(10,[[-1000,1000],[-1000,1000]],[[-2,2],[-2,2]],1000)
+    monde_aléatoire = World("Monde aléatoire",100,(0,0,0),10,0.25) # Petite camera scale
+    monde_aléatoire.add_N_corps_aleat_diff(15,[[-1000,1000],[-1000,1000]],[[-2,2],[-2,2]],1000)
 
-    # Choix du monde :
-    world=systeme_solaire
-
-    simulator = Simulator(world, SimpleAvecCollisonEngine, DummySolver)
-
-    screen_size = Vector2(800, 600)
-    screen = Screen(screen_size,
-                    bg_color=world.bg_color,
-                    caption="Simulator")
-    screen.camera.scale = world.camera_scale_initial
-
-    # this coefficient controls the speed
-    # of the simulation
-    time_scale = world.time_scale
+    # Choix des monde :
+    mondes_simulés=[systeme_solaire,monde_pour_collision,monde_aléatoire]
 
     print("Start program")
-    while not screen.should_quit:
-        dt = screen.tick(60)
+    for world in mondes_simulés :
+        simulator = Simulator(world, SimpleAvecCollisonEngine, DummySolver)
 
-        # simulate physics
-        delta_time = time_scale * dt / 1000
-        simulator.step(delta_time)
+        screen_size = Vector2(1000, 800)
+        screen = Screen(screen_size,
+                        bg_color=world.bg_color,
+                        caption="Simulator")
+        screen.camera.scale = world.camera_scale_initial
 
-        # read events
-        screen.get_events()
+        # this coefficient controls the speed
+        # of the simulation
+        time_scale = world.time_scale
 
-        # handle events
-        #   scroll wheel
-        if screen.get_wheel_up():
-            screen.camera.scale *= 1.1
-        elif screen.get_wheel_down():
-            screen.camera.scale *= 0.9
+        print("  ",world.nom,"avec",len(world),"corps.")
+        while not screen.should_quit:
+            dt = screen.tick(60)
 
-        # draw current state
-        screen.draw(world)
+            # simulate physics
+            delta_time = time_scale * dt / 1000
+            simulator.step(delta_time)
 
-        # draw additional stuff
-        screen.draw_corner_text("Time: %f" % simulator.t)
+            # read events
+            screen.get_events()
 
-        # show new state
-        screen.update()
+            # handle events
+            #   scroll wheel
+            if screen.get_wheel_up():
+                screen.camera.scale *= 1.1
+            elif screen.get_wheel_down():
+                screen.camera.scale *= 0.9
 
-    screen.close()
-    print("Done")
+            # draw current state
+            screen.draw(world)
+
+            # draw additional stuff
+            screen.draw_corner_text("Time: %f" % simulator.t)
+
+            # show new state
+            screen.update()
+
+        screen.close()
+        print("      Fin de la simulation du",world.nom)
