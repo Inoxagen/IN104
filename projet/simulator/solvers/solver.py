@@ -38,7 +38,6 @@ class DummySolver(ISolver):
              pas_fixe=t-self.t0
         else:
             pas_fixe=(t-self.t0)/nbr_de_pas
-        print(nbr_de_pas,pas_fixe)
 
         #N=len(self.y0)//4
         while(self.t0<t):
