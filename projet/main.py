@@ -131,6 +131,20 @@ if __name__ == "__main__":
             # draw current state
             screen.draw(world)
 
+            for button in screen._buttons[:5] :
+                if button==True :
+                    for body in world._bodies:
+                        if body.mass!=0 :
+                            if (screen.mouse_position-screen.camera.to_screen_coords(body.position)).norm()<=body.draw_radius:
+                                screen.camera.position=body.position
+                        else:
+                            champion=world._bodies[0]
+                            for other_body in world._bodies[1:]:
+                                if other_body.mass!=0 and (other_body.position-body.position).norm()<(champion.position-body.position).norm():
+                                    champion=other_body
+
+                            screen.camera.position=m
+
             # draw additional stuff
             screen.draw_corner_text("Time: %f" % simulator.t)
 
