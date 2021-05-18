@@ -68,7 +68,7 @@ class World:
                                      borne_vit[1][0]+rd.random()*(borne_vit[1][1]-borne_vit[1][0])),
                     mass=mass,
                     color=tuple([rd.randint(0,255) for i in range(3)]),
-                    draw_radius=int(5*math.log(mass)))
+                    draw_radius=4*mass/mass_max*int(math.log(mass+1))+1)
 
             list_id.append(self.add(b_aleat)) # On ajoute le nouveau corps et on stoque son id pour le renvoyer
         return list_id

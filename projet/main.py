@@ -90,12 +90,19 @@ if __name__ == "__main__":
     monde_pour_collision.add_set([b4,b5,b6])
 
     # Set Aléatoire
-    monde_aléatoire = World("Monde aléatoire",100,(0,0,0),10,0.25) # Petite camera scale
-    monde_aléatoire.add_N_corps_aleat_diff(15,[[-1000,1000],[-1000,1000]],[[-2,2],[-2,2]],1000)
+    monde_aléatoire = World("Monde aléatoire",0.1,(10,0,0),10,50)
+    monde_aléatoire.add_N_corps_aleat_diff(10,[[-4,4],[-4,4]],[[0,0],[0,0]],10)
+
+
+
+    # Set Aléatoire Gigantesque
+    monde_aléatoire_geant = World("Monde aléatoire gigantesque",2,(0,0,0),10,20) # Petite camera scale
+    monde_aléatoire_geant.add_N_corps_aleat_diff(15,[[-20,20],[-20,20]],[[-0.2,0.2],[-0.2,0.2]],100)
+
 
     # Choix des monde :
-    mondes_simulés=[systeme_solaire,monde_pour_collision,monde_aléatoire]
-
+    mondes_simulés=[systeme_solaire,monde_pour_collision,monde_aléatoire,monde_aléatoire_geant]
+    mondes_simulés=[monde_aléatoire_geant]
     print("Start program")
     for world in mondes_simulés :
         simulator = Simulator(world, SimpleAvecCollisonEngine, DummySolver)
