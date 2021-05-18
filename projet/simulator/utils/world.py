@@ -20,6 +20,7 @@ class Body:
 class World:
     def __init__(self,nom, seuil_collision=0,bg_color=(0,0,0),time_scale=10,camera_scale_initial=50):
         self._bodies = []
+        self.total_corps=0 # Comptabilise le nombre de corps vivant et ayant vécu.
         self.nom=nom
         self.seuil_collision=seuil_collision
         self.bg_color=bg_color
@@ -32,6 +33,7 @@ class World:
         """
         new_id = len(self._bodies)
         self._bodies.append(body)
+        self.total_corps+=1
         return new_id
 
     def add_set(self, liste_de_corps):

@@ -35,6 +35,7 @@ class Vector:
         """ Renvoie le seuil"""
         return self.seuil
 
+
     def __str__(self):
         return "(%s)" % (", ".join([str(x) for x in self._values]))
 
@@ -150,6 +151,21 @@ class Vector:
                 result[i] = self[i] / other
             return result
 
+    def __mod__(self):
+        if isinstance(other, Vector):
+            if (self.dim != other.dim):
+                raise VectorError("Cannot multiply vectors of dim %d and %d" % (
+                    self.dim, other.dim))
+
+            result = self.__class__(self.dim,max(self.seuil,other.seuil))
+            for i in range(self.dim):
+                result[i] = self[i] % other[i]
+            return result
+        else:
+            result = self.__class__(self.dim)
+            for i in range(self.dim):
+                result[i] = self[i] % other
+            return result
     # endregion
 
 
@@ -158,6 +174,7 @@ class Vector2(Vector):
         super().__init__(2,seuil)
         self[0] = x
         self[1] = y
+
 
     def get_x(self): return self[0]
     def get_y(self): return self[1]

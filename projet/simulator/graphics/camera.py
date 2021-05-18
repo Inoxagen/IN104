@@ -2,10 +2,11 @@ from ..utils.vector import Vector2
 
 
 class ICamera:
-    def __init__(self, screen_size):
+    def __init__(self, screen_size,id_ref=-1):
         self.screen_size = screen_size
         self.position = Vector2(0, 0)
         self.scale = 1
+        self.id_ref=id_ref
 
     def to_screen_coords(self, position):
         """ Converts the world-coordinate position to a screen-coordinate. """

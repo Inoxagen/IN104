@@ -1,6 +1,6 @@
 class Simulator:
-    def __init__(self, world, Engine, Solver):
-        self.t = 0
+    def __init__(self, world, Engine, Solver,t=0):
+        self.t = t
         self.world = world
 
         self.engine = Engine(self.world)
@@ -16,6 +16,12 @@ class Simulator:
         y0 = self.engine.make_solver_state()
 
         self.solver = Solver(self.engine.derivatives, self.t, y0)
+
+    def re_init(self, world):
+        self.world = world
+        self.engine.__init__(self.world)
+        y0 = self.engine.make_solver_state()
+        self.solver.__init__(self.engine.derivatives, self.t, y0)
 
     def step(self, h):
         y = self.solver.integrate(self.t + h)

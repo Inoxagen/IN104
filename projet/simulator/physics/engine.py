@@ -165,6 +165,10 @@ class SimpleAvecCollisonEngine(DummyEngine):
                             I=self.world._bodies[i]
                             J=self.world._bodies[j]
 
+                            # Du au seuil de collision les 2 sont pas forcement superposés :
+                            # on pondère donc aussi la position par la masse
+                            self.world._bodies[i].position=(I.mass*I.position+J.mass*J.position)/(I.mass+J.mass)
+
                             # Pondération de la vitesse
                             self.world._bodies[i].velocity=(I.mass*I.velocity+J.mass*J.velocity)/(I.mass+J.mass)
                             #self.world._bodies[j].velocity=I.velocity+J.velocity
