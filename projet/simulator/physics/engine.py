@@ -15,10 +15,12 @@ def gravitational_force(pos1, mass1, pos2, mass2):
         return Vector(len(pos1))  #  Vecteur nul bonne longueur
 
 
-def force_grav_massiq_depuis_diff(vecteur_difference):
+def acc_grav_massiq_depuis_diff(vecteur_difference):
     """ La difference est calculée pour vérifier les colisions
         La masse 1 etait passée à 1 pour éviter de diviser
         -> on les retire des paramètres
+
+        L'idée est de calculer 1 seul fois le vecteur accelération
     """
     d=Vector.norm(vecteur_difference)
     # Force de A sur B = G* mA * mB / d² dans la direction A vers B
@@ -116,7 +118,7 @@ class SimpleSansCollisonEngine(DummyEngine):
             pos_i=Vector2(y0[self.dim*i],y0[self.dim*i+1])
 
             for j in range(i):
-                vect_acc=force_grav_massiq_depuis_diff(pos_i - Vector2(y0[self.dim*j],y0[self.dim*j+1]))
+                vect_acc=acc_grav_massiq_depuis_diff(pos_i - Vector2(y0[self.dim*j],y0[self.dim*j+1]))
                 y1[self.dim*self.n + self.dim*i ] += self.world._bodies[j].mass*vect_acc.get_x()
                 y1[self.dim*self.n + self.dim*i+1]+= self.world._bodies[j].mass*vect_acc.get_y()
                 y1[self.dim*self.n + self.dim*j ] += -self.world._bodies[i].mass*vect_acc.get_x()

@@ -32,11 +32,13 @@ class ISolver:
 class DummySolver(ISolver):
     def integrate(self, t):
         # On recherche le pas fixe de la bonne longueur
-        nbr_de_pas= abs((t-self.t0) // self.max_step_size )
+        nbr_de_pas= (t-self.t0) // self.max_step_size + 1
+
         if(nbr_de_pas==0):
              pas_fixe=t-self.t0
         else:
-            pas_fixe=abs((t-self.t0)/nbr_de_pas)
+            pas_fixe=(t-self.t0)/nbr_de_pas
+        print(nbr_de_pas,pas_fixe)
 
         #N=len(self.y0)//4
         while(self.t0<t):
