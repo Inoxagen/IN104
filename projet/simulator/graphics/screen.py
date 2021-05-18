@@ -1,7 +1,8 @@
 import pygame as pg
 
 from ..utils.pygame_utils import draw_text
-from ..utils.vector import Vector2
+from ..utils.vector import Vector, Vector2
+#from ..utils.vector import Vector2, Vector
 from .camera import Camera
 
 
@@ -97,6 +98,14 @@ class Screen:
                 pg.draw.circle(s, body.color,
                         (int(screen_pos.get_x()), int(screen_pos.get_y())),
                            int(body.draw_radius), 0)
+                for button in self._buttons[:5] :
+                    if button==True:
+                        print(Vector.norm(self.mouse_position-self.camera.to_screen_coords(body.position)))
+                        print(body.draw_radius)
+                        if Vector.norm(self.mouse_position-self.camera.to_screen_coords(body.position))<=body.draw_radius:
+                            print(body.color)
+                            self.camera.position=body.position
+
 
 
     def draw_corner_text(self, s):
