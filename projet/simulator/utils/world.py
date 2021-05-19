@@ -6,22 +6,24 @@ import math
 
 
 class Body:
-    def __init__(self, position, velocity=Vector2(0, 0), mass=1, color=(255, 255, 255), draw_radius=50):
+    def __init__(self, position, velocity=Vector2(0, 0), mass=1, color=(255, 255, 255), draw_radius=50,nom=""):
         self.position = position
         self.velocity = velocity
         self.mass = mass
         self.color = color
         self.draw_radius = draw_radius
+        self.nom=nom
 
     def __str__(self):
-        return "<pos:%s, vel:%s, mass:%.2f>" % (self.position, self.velocity, self.mass)
+        return "%s position:%s, vitesse:%s, masse:%.2f" % (self.nom, self.position, self.velocity, self.mass)
 
 
 class World:
-    def __init__(self,nom, seuil_collision=0,bg_color=(0,0,0),time_scale=10,camera_scale_initial=50):
+    def __init__(self, nom="", modeParlant=True, seuil_collision=0, bg_color=(0,0,0), time_scale=10, camera_scale_initial=50):
         self._bodies = []
         self.total_corps=0 # Comptabilise le nombre de corps vivant et ayant vécu.
         self.nom=nom
+        self.modeParlant=modeParlant
         self.seuil_collision=seuil_collision
         self.bg_color=bg_color
         self.time_scale=time_scale
@@ -70,7 +72,8 @@ class World:
                                      borne_vit[1][0]+rd.random()*(borne_vit[1][1]-borne_vit[1][0])),
                     mass=mass,
                     color=tuple([rd.randint(0,255) for i in range(3)]),
-                    draw_radius=4*mass/mass_max*int(math.log(mass+1))+1)
+                    draw_radius=4*mass/mass_max*int(math.log(mass+1))+1,
+                    nom=str(rd.randbytes(1))) # Des beaux noms d'astréroïdes
 
             list_id.append(self.add(b_aleat)) # On ajoute le nouveau corps et on stoque son id pour le renvoyer
         return list_id

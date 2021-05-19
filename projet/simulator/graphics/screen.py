@@ -20,8 +20,8 @@ class Screen:
         self.mouse_position = Vector2(0, 0)
 
         # this will store which buttons have been pressed in the current frame
-        # [LeftMouse, MiddleMouse, RightMouse, ScrollWheelUp, ScrollWheelDown,Left_Key,Right_Key,Up_Key,Down_Key,BarreEspace]
-        self._buttons = [False, False, False, False, False,False,False,False,False,False]
+        # [LeftMouse, MiddleMouse, RightMouse, ScrollWheelUp, ScrollWheelDown,Left_Key,Right_Key,Up_Key,Down_Key,BarreEspace,Touche_O,Touche_C,Touche_X,Touche_V,Touche_TAB]
+        self._buttons = [False,False,False,False,False,False,False,False,False,False,False,True,False,True,False]
 
         # this will be true when the user presses the exit button of the window
         self.should_quit = False
@@ -40,16 +40,18 @@ class Screen:
 
     def get_events(self):
         self.mouse_position = Vector2(*pg.mouse.get_pos())
-        self._buttons = [False,self._buttons[1],self._buttons[2],False,False,self._buttons[5],self._buttons[6],self._buttons[7],self._buttons[8],self._buttons[9]]
-        #if(self.frame%10==0):
-        #    self._buttons = [False,self._buttons[1],self._buttons[2],False,False,False,False,False,False,self._buttons[9]]
+        self._buttons[0]=False # Clic gauche  )
+        self._buttons[3]=False # Molette haut ) -> On écrase par False a chaque tour
+        self._buttons[4]=False # Molette bas  )     (   for _ in _ (0,3,4)   )
+        self._buttons[12]=False
+        self._buttons[14]=False
 
         events = pg.event.get()
         for event in events:
             if event.type == pg.QUIT:
                 self.should_quit = True
             elif event.type == pg.MOUSEBUTTONDOWN: #On clique avec la souris
-                if event.button <= len(self._buttons):
+                if event.button <= 5:
                     self._buttons[event.button - 1] = True
             elif event.type == pg.MOUSEBUTTONUP : #On retire le doigt de la souris
                 if event.button <= 3:
@@ -65,6 +67,16 @@ class Screen:
                     self._buttons[6]=True
                 if event.key == pg.K_SPACE:
                     self._buttons[9]= not self._buttons[9]
+                if event.key == pg.K_o:
+                    self._buttons[10]= not self._buttons[10]
+                if event.key == pg.K_c:
+                    self._buttons[11]= not self._buttons[11]
+                if event.key == pg.K_x:
+                    self._buttons[12]= True
+                if event.key == pg.K_v:
+                    self._buttons[13]= not self._buttons[13]
+                if event.key == pg.K_TAB:
+                    self._buttons[14]= True
             elif event.type == pg.KEYUP:
                 if event.key == pg.K_z or event.key == pg.K_UP:
                     self._buttons[7]=False
@@ -76,11 +88,14 @@ class Screen:
                     self._buttons[6]=False
         self.frame += 1
 
-    def draw(self, world):
+    def draw(self, world,orbites=[]):
         self._screen.fill(self._bg_color)
 
         s = pg.Surface(self.screen_size, pg.SRCALPHA)
-        self.__draw_world(s, world)
+
+        self.__draw_orbite(s, orbites)
+        if self.get_touche_c():
+            self.__draw_world(s, world)
         self._screen.blit(s, s.get_rect())
 
         draw_text(self._screen, self._font, "Frame: %s" % self.frame,
@@ -94,21 +109,31 @@ class Screen:
         draw_text(self._screen, self._font, "Au clavier",
                   Vector2(0, 60), color=(255, 255, 0))
         draw_text(self._screen, self._font, "Déplacement avec [ZSQD] ou les [flèches]",
-                  Vector2(0, 72), color=(255, 255, 0))
+                  Vector2(0, 72), color=(255, 255, 255*(sum(self._buttons[5:9])>0)))
         draw_text(self._screen, self._font, "La [barre espace] met en pause la simulation",
-                  Vector2(0, 84), color=(255, 255, 0))
+                  Vector2(0, 84), color=(255, 255, 255*self._buttons[9]))
+        draw_text(self._screen, self._font, "[C] affiche des corps",
+                  Vector2(0, 96), color=(255, 255, 255*self._buttons[11]))
+        draw_text(self._screen, self._font, "[O] affichage des orbites",
+                  Vector2(0, 108), color=(255, 255, 255*self._buttons[10]))
+        draw_text(self._screen, self._font, "[X] supprime les orbites enregistrées",
+                  Vector2(0, 120), color=(255, 255, 255*self._buttons[12]))
+        draw_text(self._screen, self._font, "[V] imprime des commentaires",
+                  Vector2(0, 132), color=(255, 255, 255*self._buttons[13]))
+        draw_text(self._screen, self._font, "[Tab] passage en revue au corps suivant",
+                  Vector2(0, 144), color=(255, 255, 255*self._buttons[14]))
         draw_text(self._screen, self._font, "A la Souris",
-                  Vector2(0, 108), color=(255, 0, 255))
-        draw_text(self._screen, self._font, "[Clic gauche] caméra - séléction d'un astre à suivre",
-                  Vector2(0, 120), color=(255, 0, 255))
-        draw_text(self._screen, self._font, "[                    - coordonnées où poser la caméra",
-                  Vector2(0, 132), color=(255, 0, 255))
-        draw_text(self._screen, self._font, "[Clic droit] dépot de matière",
-                  Vector2(0, 144), color=(255, 0, 255))
-        draw_text(self._screen, self._font, "[Clic milieu] déplacement en poursuite du curseur",
-                  Vector2(0, 156), color=(255, 0, 255))
-        draw_text(self._screen, self._font, "[Mollette] réglage du zoom",
                   Vector2(0, 168), color=(255, 0, 255))
+        draw_text(self._screen, self._font, "[Clic gauche] caméra - séléction d'un astre à suivre",
+                  Vector2(0, 180), color=(255, 255*self._buttons[0], 255))
+        draw_text(self._screen, self._font, "[                    - coordonnées où poser la caméra",
+                  Vector2(0, 192), color=(255, 255*self._buttons[0], 255))
+        draw_text(self._screen, self._font, "[Clic droit] dépot de matière",
+                  Vector2(0, 204), color=(255, 255*self._buttons[2], 255))
+        draw_text(self._screen, self._font, "[Clic milieu] déplacement en poursuite du curseur",
+                  Vector2(0, 216), color=(255, 255*self._buttons[1], 255))
+        draw_text(self._screen, self._font, "[Mollette] réglage du zoom",
+                  Vector2(0, 228), color=(255, 255*(self._buttons[3]+self._buttons[4]>0), 255))
 
     def tick(self, fps):
         self.clock.tick(fps)
@@ -122,17 +147,24 @@ class Screen:
 
     def __draw_world(self, s, world):
         for body in world.bodies():
-                screen_pos = self.camera.to_screen_coords(body.position)
-                pg.draw.circle(s, body.color,
+            screen_pos = self.camera.to_screen_coords(body.position)
+            pg.draw.circle(s, body.color,
                         (int(screen_pos.get_x()), int(screen_pos.get_y())),
                            int(body.draw_radius), 0)
 
+    def __draw_orbite(self, s, orbites):
+        for point in orbites:
+            screen_pos = self.camera.to_screen_coords(point[0])
+            pg.draw.circle(s, point[1],
+                        (int(screen_pos.get_x()),int(screen_pos.get_y())),1,0)
 
 
-
+    def draw_corner_text_info_corps(self,body):
+        draw_text(self._screen, self._font, str(body),
+                  Vector2(0, self.screen_size.get_y() - 26), color=body.color)
     def draw_corner_text(self, s):
         draw_text(self._screen, self._font, s,
-                  Vector2(0, self.screen_size.get_y() - 12), (255, 255, 255))
+                  Vector2(0, self.screen_size.get_y() - 14), (255, 255, 255))
 
     def get_left_mouse(self): return self._buttons[0]
     def get_middle_mouse(self): return self._buttons[1]
@@ -143,4 +175,9 @@ class Screen:
     def get_right_key(self): return self.buttons[6]
     def get_up_key(self) : return self.buttons[7]
     def get_down_key(self):return self.buttons[8]
-    def get_space_key(self):return self._buttons[9]
+    def get_touche_espace(self):return self._buttons[9]
+    def get_touche_o(self):return self._buttons[10]
+    def get_touche_c(self):return self._buttons[11]
+    def get_touche_x(self):return self._buttons[12]
+    def get_touche_v(self):return self._buttons[13]
+    def get_touche_Tab(self):return self._buttons[14]

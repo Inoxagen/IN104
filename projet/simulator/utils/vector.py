@@ -35,6 +35,11 @@ class Vector:
         """ Renvoie le seuil"""
         return self.seuil
 
+    def copy(self):
+        result = self.__class__(self.dim)
+        for i in range(self.dim):
+            result[i] = self[i]
+        return result
 
     def __str__(self):
         return "(%s)" % (", ".join([str(x) for x in self._values]))
@@ -181,3 +186,6 @@ class Vector2(Vector):
 
     def set_x(self, value): self[0] = value
     def set_y(self, value): self[1] = value
+
+    def __str__(self):
+        return "(%.2f,%.2f)" % (self[0],self[1])

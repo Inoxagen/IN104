@@ -158,7 +158,8 @@ class SimpleAvecCollisonEngine(DummyEngine):
                                                 (il sera supprimé plus tard)
                                                 on recommence ce calcul
                             """
-                            print('      -> COLLISION entre',i,'et',j)
+                            if self.world.modeParlant :
+                                print('      -> COLLISION entre',i,self.world._bodies[i].nom,'et',j,self.world._bodies[j].nom)
 
                             # Fusion des données
                             # Recupération des corps à fusionner
@@ -175,6 +176,10 @@ class SimpleAvecCollisonEngine(DummyEngine):
                             y0[(self.n + i)*self.dim]=self.world._bodies[i].velocity.get_x()
                             y0[(self.n + i)*self.dim+1]=self.world._bodies[i].velocity.get_y()
 
+                            # Nom (on garde celle du plus lourd)
+                            if J.mass>I.mass :
+                                self.world._bodies[i].nom=J.nom
+
                             # Ajout des masse
                             self.world._bodies[i].mass+=J.mass
                             # Moyenne des couleurs
@@ -190,6 +195,9 @@ class SimpleAvecCollisonEngine(DummyEngine):
                             self.world._bodies[j].velocity=Vector2(0,0)
                             self.world._bodies[j].color=self.world.bg_color
                             self.world._bodies[j].draw_radius=0
+                            self.world._bodies[j].nom="Astre déchu"
+
+
 
                             return self.derivatives(t0, y0)
 
