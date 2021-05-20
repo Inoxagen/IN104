@@ -114,15 +114,14 @@ class Screen:
         x+=self.taille_police
         draw_text(self._screen, self._font, "Mouse position: %s" % self.mouse_position,
                   Vector2(0, x), color=(0, 255, 255))
-        x+=self.taille_police
-        draw_text(self._screen, self._font, "Buttons: %s" % self._buttons,
-                  Vector2(0, x), color=(0, 255, 255))
-        x+=self.taille_police
-        draw_text(self._screen, self._font, "Should quit: %s" % self.should_quit,
-                  Vector2(0, x), color=(0, 255, 255))
         x+=2*self.taille_police
+        draw_text(self._screen, pg.font.SysFont('Arial', 2*self.taille_police),world.nom,
+                  Vector2(0, x), color=(246, 15, 15))
+
+
+        x+=3*self.taille_police
         draw_text(self._screen, self._font, "Au clavier",
-                  Vector2(0, x), color=(255, 255, 0))
+                  Vector2(0, x), color=(35, 220, 235))
         x+=self.taille_police
         draw_text(self._screen, self._font, "Déplacement avec [ZSQD] ou les [flèches] (logique inversée)",
                   Vector2(0, x), color=(255, 255, 255*(sum(self._buttons[5:9])>0)))
@@ -152,22 +151,22 @@ class Screen:
                   Vector2(0, x), color=(255, 255, 0))
         x+=2*self.taille_police
         draw_text(self._screen, self._font, "A la Souris",
-                  Vector2(0, x), color=(255, 0, 255))
+                  Vector2(0, x), color=(35, 220, 235))
         x+=self.taille_police
         draw_text(self._screen, self._font, "[Clic gauche] caméra - séléction d'un astre à suivre",
-                  Vector2(0, x), color=(255, 255*self._buttons[0], 255))
+                  Vector2(0, x), color=(35+220*self._buttons[0], 247+8*self._buttons[0], 20+235*self._buttons[0]))
         x+=self.taille_police
         draw_text(self._screen, self._font, "[                    - coordonnées où poser la caméra",
-                  Vector2(0, x), color=(255, 255*self._buttons[0], 255))
+                  Vector2(0, x), color=(35+220*self._buttons[0], 247+8*self._buttons[0], 20+235*self._buttons[0]))
         x+=self.taille_police
         draw_text(self._screen, self._font, "[Clic droit] dépot de matière",
-                  Vector2(0, x), color=(255, 255*self._buttons[2], 255))
+                  Vector2(0, x), color=(35+220*self._buttons[2], 247+8*self._buttons[2], 20+235*self._buttons[2]))
         x+=self.taille_police
         draw_text(self._screen, self._font, "[Clic milieu] déplacement en poursuite du curseur",
-                  Vector2(0, x), color=(255, 255*self._buttons[1], 255))
+                  Vector2(0, x), color=(35+220*self._buttons[1], 247+8*self._buttons[1], 20+235*self._buttons[1]))
         x+=self.taille_police
         draw_text(self._screen, self._font, "[Mollette] réglage du zoom",
-                  Vector2(0, x), color=(255, 255*(self._buttons[3]+self._buttons[4]>0), 255))
+                  Vector2(0, x), color=(35+220*self._buttons[3], 247+8*self._buttons[3], 20+235*self._buttons[3]))
 
     def tick(self, fps):
         self.clock.tick(fps)

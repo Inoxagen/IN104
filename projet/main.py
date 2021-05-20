@@ -50,17 +50,17 @@ if __name__ == "__main__":
     systeme_solaire.add_set([Soleil,Terre,Mars])
 
     # Set Collision
-    monde_pour_collision = World("Monde pour collision",True,0.1,(0,0,70))
+    monde_pour_collision = World("Monde pour collision",True,0.1,(1,5,59))
     monde_pour_collision.add_set([b4,b5,b6])
 
     # Set Aléatoire
-    monde_aléatoire = World("Monde aléatoire",True,0.1,(10,0,0),10,50)
+    monde_aléatoire = World("Monde aléatoire",True,0.1,(8,11,47),10,50)
     monde_aléatoire.add_N_corps_aleat_diff(10,[[-4,4],[-4,4]],[[0,0],[0,0]],10)
 
 
 
     # Set Aléatoire Gigantesque
-    monde_aléatoire_geant = World("Monde aléatoire gigantesque",True,0.8,(0,0,0),10,20) # Petite camera scale
+    monde_aléatoire_geant = World("Monde aléatoire gigantesque",True,0.8,(28,30,56),10,20) # Petite camera scale
     monde_aléatoire_geant.add_N_corps_aleat_diff(17,[[-20,20],[-20,20]],[[-0.2,0.2],[-0.2,0.2]],100)
 
 
@@ -71,7 +71,7 @@ if __name__ == "__main__":
     for world in mondes_simulés :
         simulator = Simulator(world, SimpleAvecCollisonEngine, DummySolver)
 
-        screen_size = Vector2(800, 600)
+        screen_size = Vector2(1000, 600)
         screen = Screen(screen_size,
                         bg_color=world.bg_color,
                         caption="Simulator")
@@ -209,7 +209,7 @@ if __name__ == "__main__":
                             velocity=Vector2(0,0),
                             mass=1,
                             color=tuple([rd.randint(0,255) for i in range(3)]),
-                            draw_radius=1,nom=str(rd.randbytes(1))))
+                            draw_radius=1,nom="x//%s"%len(world)))
                 simulator.re_init(world) # On refait l'initialisation de la simulation
 
             ## Fin des evenements

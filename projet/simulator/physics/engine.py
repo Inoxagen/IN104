@@ -159,7 +159,7 @@ class SimpleAvecCollisonEngine(DummyEngine):
                                                 on recommence ce calcul
                             """
                             if self.world.modeParlant :
-                                print('      -> COLLISION entre',i,self.world._bodies[i].nom,'et',j,self.world._bodies[j].nom)
+                                print('      -> COLLISION entre',self.world._bodies[i].nom,i,'et',self.world._bodies[j].nom,j)
 
                             # Fusion des données
                             # Recupération des corps à fusionner

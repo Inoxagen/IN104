@@ -1,6 +1,6 @@
 from .vector import Vector2
 from ..utils.uid import UID
-
+from .corps_celestes import Corps_Celestes
 import random as rd
 import math
 
@@ -73,7 +73,7 @@ class World:
                     mass=mass,
                     color=tuple([rd.randint(0,255) for i in range(3)]),
                     draw_radius=4*mass/mass_max*int(math.log(mass+1))+1,
-                    nom=str(rd.randbytes(1))) # Des beaux noms d'astréroïdes
+                    nom=rd.choice(Corps_Celestes))# Des beaux noms d'astréroïdes
 
             list_id.append(self.add(b_aleat)) # On ajoute le nouveau corps et on stoque son id pour le renvoyer
         return list_id
