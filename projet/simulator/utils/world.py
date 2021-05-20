@@ -15,7 +15,7 @@ class Body:
         self.nom=nom
 
     def __str__(self):
-        return "%s position:%s, vitesse:%s, masse:%.2f" % (self.nom, self.position, self.velocity, self.mass)
+        return "%s - position:%s, vitesse:%s, masse:%.2f" % (self.nom, self.position, self.velocity, self.mass)
 
 
 class World:

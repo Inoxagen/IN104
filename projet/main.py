@@ -86,6 +86,7 @@ if __name__ == "__main__":
 
         while not screen.should_quit:
 
+            ## Dessin et Calcul du prochain état
             # -O activé (->on dessine les orbites)
             if screen.get_touche_o():
                 screen.draw(world,orbites)
@@ -103,7 +104,7 @@ if __name__ == "__main__":
                 simulator.step(delta_time)
 
 
-            # Nettoyage des objets de masse nulle ET recup position pour orbites
+            ## Nettoyage des objets de masse nulle ET recup position pour orbites
             a_retirer=[]
             for i in range(len(world)):
                 if world._bodies[i].mass>0:
@@ -142,13 +143,12 @@ if __name__ == "__main__":
                 simulator.re_init(world) # On refait l'initialisation de la simulation
 
 
-            # Lecture des Evenements
+            ## Lecture des Evenements
             screen.get_events()
 
             # Conséquences des évènements :
-            # Evenement clavier
-
-            # Touche ZSQD et Flèches
+            ## Evenement clavier
+            # Touche ZSQD et Flèches (-> Déplacement)
             if sum(screen._buttons[5:9])>0 and screen.camera.id_ref!=-1:
                 # Si déplacement au clavier ->Sortie mode focalisé
                 screen.camera.position=world._bodies[screen.camera.id_ref].position.copy()
@@ -173,6 +173,15 @@ if __name__ == "__main__":
             if screen.get_touche_Tab():
                 screen.camera.id_ref=(screen.camera.id_ref+1)%len(world)
 
+            # -Chiffres (passage direct en suivit du numéro demandé)
+            if 1 <= screen.get_chiffre() and screen.get_chiffre() <= len(world):
+                screen.camera.id_ref=screen.get_chiffre()-1
+
+            # -Touche Entrer (fermeture simulation)
+            if screen.get_touche_entrer():
+                screen.should_quit=True
+
+            ## Evenement à la souris
             # -Molette souris (zoom camera)
             if screen.get_wheel_up():
                 screen.camera.scale *= 1.1
@@ -194,12 +203,6 @@ if __name__ == "__main__":
                             screen.camera.id_ref=i
                 screen.camera.position=screen.camera.from_screen_coords(screen.mouse_position)
 
-            if screen.camera.id_ref!=-1:
-                # On suit le corps referent
-                screen.camera.position=world._bodies[screen.camera.id_ref].position
-                # On affiche ses informations
-                screen.draw_corner_text_info_corps(world._bodies[screen.camera.id_ref])
-
             # -Clic droit
             if screen.get_right_mouse():
                 world.add(Body(screen.camera.from_screen_coords(screen.mouse_position),
@@ -209,12 +212,21 @@ if __name__ == "__main__":
                             draw_radius=1,nom=str(rd.randbytes(1))))
                 simulator.re_init(world) # On refait l'initialisation de la simulation
 
+            ## Fin des evenements
+            # Mise a jour du corps suivi
+            if screen.camera.id_ref!=-1:
+                # On suit le corps referent
+                screen.camera.position=world._bodies[screen.camera.id_ref].position
+                # On affiche ses informations
+                screen.draw_corner_text_info_corps(world._bodies[screen.camera.id_ref])
 
-            # draw additional stuff
+            # Corps restant
             screen.draw_corner_text("Corps restant : "+str(len(world))+"/"+str(world.total_corps)+"  ---  Time: %f" % simulator.t)
 
             # show new state
             screen.update()
 
+
+        # Une fois une simulation finie
         screen.close()
         print("      Fin de la simulation du",world.nom)
