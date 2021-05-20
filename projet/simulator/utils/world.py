@@ -45,7 +45,7 @@ class World:
             list_id.append(self.add(body))
         return list_id
 
-    def add_N_corps_aleat_diff(self,N, borne_pos, borne_vit, mass_max):
+    def add_N_corps_aleat_diff(self,N, borne_pos=[[-1,1],[-1,1]], borne_vit=[[0,2],[0,2]], mass_max=2):
         """" Ajoute des corps aléatoires a des positions differentes """
 
         # Récupération des positions déjà occupées

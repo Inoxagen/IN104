@@ -41,3 +41,9 @@ class VectorTestCase(unittest.TestCase):
 
         self.assertEqual(v[0], 10)
         self.assertEqual(v[1], 6)
+
+    def test_copy(self):
+        #Vecteurs identiques mais adresses différentes (palie au problème d'étiquette)
+        V=Vector(20)
+        V_=V.copy()
+        self.assertNotEqual(V,V_)

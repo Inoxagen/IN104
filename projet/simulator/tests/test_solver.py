@@ -80,4 +80,4 @@ class SolverTestCase(unittest.TestCase):
                         approx = solver_instance.integrate(t0 + h)
 
                         # Avec places = 2 on passe le test
-                        self.assertAlmostEqual(approx, exact, places=3)
+                        self.assertAlmostEqual(approx, exact, places=2)

@@ -130,3 +130,28 @@ class EngineTestCase(unittest.TestCase):
                 self.assertAlmostEqual(derivative[5], 3.077480680034758e-05)
                 self.assertAlmostEqual(derivative[6], 1.538740340017379e-05)
                 self.assertAlmostEqual(derivative[7], -3.077480680034758e-05)
+
+    def test_collision(self):
+        world = World("",True,0.1)
+        world.add(Body(Vector2(0, 0.01), velocity=Vector2(0, 0),mass=10))
+        world.add(Body(Vector2(0, 0), velocity=Vector2(0, 0),mass=10))
+
+        y0 = Vector(8)
+        y0[0] = 0
+        y0[1] = 0.01
+        y0[2] = 0
+        y0[3] = 0
+        y0[4] = 0
+        y0[5] = 0
+        y0[6] = 0
+        y0[7] = 0
+
+        for Engine in ENGINES:
+            with self.subTest(engine=Engine):
+                engine_instance = Engine(world)
+                print(engine_instance.derivatives(0,y0))
+                print(world._bodies[0])
+                print(world._bodies[1])
+                self.assertFalse(world._bodies[0].mass*world._bodies[1].mass)
+
+

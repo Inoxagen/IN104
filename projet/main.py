@@ -229,4 +229,5 @@ if __name__ == "__main__":
 
         # Une fois une simulation finie
         screen.close()
+        world.clear_all() #On libère la mémoire
         print("      Fin de la simulation du",world.nom)
