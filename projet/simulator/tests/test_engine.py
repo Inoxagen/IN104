@@ -1,12 +1,12 @@
 import unittest
 from .. import Body, World
 from ..utils.vector import Vector2, Vector
-from ..physics.engine import DummyEngine, gravitational_force
+from ..physics.engine import SimpleAvecCollisonEngine,SimpleSansCollisonEngine,DummyEngine, gravitational_force
 from ..physics.constants import G
 
 # region Solvers
 # This arry stores all the engines that will be tested by EngineTestCase
-ENGINES = [DummyEngine]
+ENGINES = [SimpleAvecCollisonEngine]
 # endregion
 
 
@@ -132,7 +132,7 @@ class EngineTestCase(unittest.TestCase):
                 self.assertAlmostEqual(derivative[7], -3.077480680034758e-05)
 
     def test_collision(self):
-        world = World("",True,0.1)
+        world = World("",False,0.1) # False : On veut pas qu'il parle !
         world.add(Body(Vector2(0, 0.01), velocity=Vector2(0, 0),mass=10))
         world.add(Body(Vector2(0, 0), velocity=Vector2(0, 0),mass=10))
 
@@ -149,9 +149,28 @@ class EngineTestCase(unittest.TestCase):
         for Engine in ENGINES:
             with self.subTest(engine=Engine):
                 engine_instance = Engine(world)
-                print(engine_instance.derivatives(0,y0))
-                print(world._bodies[0])
-                print(world._bodies[1])
+                engine_instance.derivatives(0,y0)
                 self.assertFalse(world._bodies[0].mass*world._bodies[1].mass)
+
+    def test_non_collision(self):
+        world = World("",False,0.1)
+        world.add(Body(Vector2(0, 1), velocity=Vector2(0, 0),mass=10))
+        world.add(Body(Vector2(0, 0), velocity=Vector2(0, 0),mass=10))
+
+        y0 = Vector(8)
+        y0[0] = 0
+        y0[1] = 1
+        y0[2] = 0
+        y0[3] = 0
+        y0[4] = 0
+        y0[5] = 0
+        y0[6] = 0
+        y0[7] = 0
+
+        for Engine in ENGINES:
+            with self.subTest(engine=Engine):
+                engine_instance = Engine(world)
+                engine_instance.derivatives(0,y0)
+                self.assertTrue(world._bodies[0].mass*world._bodies[1].mass)
 
 
