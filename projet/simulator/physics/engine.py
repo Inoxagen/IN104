@@ -46,9 +46,7 @@ class IEngine:
                 [vx1, vy1, vx2, vy2, ..., vxn, vyn, ax1, ay1, ax2, ay2, ..., axn, ayn]
             where vxi, vyi are the velocities and axi, ayi are the accelerations.
         """
-
         raise NotImplementedError
-
 
 
     def make_solver_state(self):
@@ -86,7 +84,6 @@ class DummyEngine(IEngine):
 
             y1[self.dim*self.n + self.dim*i ] = acc_i.get_x()
             y1[self.dim*self.n + self.dim*i+1]= acc_i.get_y()
-
         return y1
 
 
@@ -197,8 +194,6 @@ class SimpleAvecCollisonEngine(DummyEngine):
                             self.world._bodies[j].draw_radius=0
                             self.world._bodies[j].nom="Astre déchu"
 
-
-
                             return self.derivatives(t0, y0)
 
                         else:
@@ -207,6 +202,5 @@ class SimpleAvecCollisonEngine(DummyEngine):
                             y1[self.dim*self.n + self.dim*i+1]+= self.world._bodies[j].mass*vect_acc.get_y()
                             y1[self.dim*self.n + self.dim*j ] += -self.world._bodies[i].mass*vect_acc.get_x()
                             y1[self.dim*self.n + self.dim*j+1]+= -self.world._bodies[i].mass*vect_acc.get_y()
-
         return y1
 

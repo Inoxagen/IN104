@@ -105,9 +105,6 @@ class Screen:
             self.__draw_world(s, world)
         self._screen.blit(s, s.get_rect())
 
-        if sum(self._buttons[5:9])>0:
-            self.__draw_viseur(s)
-
         x=0
         draw_text(self._screen, self._font, "Frame: %s" % self.frame,
                   Vector2(0, x), color=(0, 255, 255))
@@ -117,8 +114,6 @@ class Screen:
         x+=2*self.taille_police
         draw_text(self._screen, pg.font.SysFont('Arial', 2*self.taille_police),world.nom,
                   Vector2(0, x), color=(246, 15, 15))
-
-
         x+=3*self.taille_police
         draw_text(self._screen, self._font, "Au clavier",
                   Vector2(0, x), color=(35, 220, 235))
@@ -166,7 +161,7 @@ class Screen:
                   Vector2(0, x), color=(35+220*self._buttons[1], 247+8*self._buttons[1], 20+235*self._buttons[1]))
         x+=self.taille_police
         draw_text(self._screen, self._font, "[Mollette] réglage du zoom",
-                  Vector2(0, x), color=(35+220*self._buttons[3], 247+8*self._buttons[3], 20+235*self._buttons[3]))
+                  Vector2(0, x), color=(35+220*(self._buttons[3]+self._buttons[4]>0), 247+8*(self._buttons[3]+self._buttons[4]>0), 20+235*(self._buttons[3]+self._buttons[4]>0)))
 
     def tick(self, fps):
         self.clock.tick(fps)
@@ -190,11 +185,6 @@ class Screen:
             screen_pos = self.camera.to_screen_coords(point[0])
             pg.draw.circle(s, point[1],
                         (int(screen_pos.get_x()),int(screen_pos.get_y())),1,0)
-
-    def __draw_viseur(self, s):
-        screen_pos=self.camera.screen_size/2
-        pg.draw.circle(s,(237, 123,9),(int(screen_pos.get_x()),int(screen_pos.get_y())),1,0)
-
 
     def draw_corner_text_info_corps(self,body):
         draw_text(self._screen, self._font, str(body),

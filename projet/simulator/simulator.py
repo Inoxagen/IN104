@@ -18,6 +18,7 @@ class Simulator:
         self.solver = Solver(self.engine.derivatives, self.t, y0)
 
     def re_init(self, world):
+        # Pour reinitialisation
         self.world = world
         self.engine.__init__(self.world)
         y0 = self.engine.make_solver_state()
