@@ -159,7 +159,7 @@ class Vector:
     def __mod__(self):
         if isinstance(other, Vector):
             if (self.dim != other.dim):
-                raise VectorError("Cannot multiply vectors of dim %d and %d" % (
+                raise VectorError("Cannot modulo vectors of dim %d and %d" % (
                     self.dim, other.dim))
 
             result = self.__class__(self.dim,max(self.seuil,other.seuil))

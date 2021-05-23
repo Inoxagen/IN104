@@ -132,7 +132,7 @@ class EngineTestCase(unittest.TestCase):
                 self.assertAlmostEqual(derivative[7], -3.077480680034758e-05)
 
     def test_collision(self):
-        world = World("",False,0.1) # False : On veut pas qu'il parle !
+        world = World("",False,0.1) # False : On veut pas d'affichage dans l'invite de commande
         world.add(Body(Vector2(0, 0.01), velocity=Vector2(0, 0),mass=10))
         world.add(Body(Vector2(0, 0), velocity=Vector2(0, 0),mass=10))
 
