@@ -69,7 +69,7 @@ if __name__ == "__main__":
     for world in mondes_simulés :
         simulator = Simulator(world, SimpleAvecCollisonEngine, DummySolver)
 
-        screen_size = Vector2(1000, 600)
+        screen_size = Vector2(1000, 1000)
         screen = Screen(screen_size,
                         bg_color=world.bg_color,
                         caption="Simulator")
